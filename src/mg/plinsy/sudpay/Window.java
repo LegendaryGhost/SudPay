@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public class Window extends JFrame implements ActionListener {
 	
@@ -24,7 +24,6 @@ public class Window extends JFrame implements ActionListener {
 	private Dimension labelDimension = new Dimension(200, 25);
 	private Dimension inputDimension = new Dimension(200, 25);
 	
-	private JPanel centerPanel;
 	private JTextField inputNom;
 	private JTextField inputPrenom;
 	private JTextField inputTel;
@@ -48,6 +47,9 @@ public class Window extends JFrame implements ActionListener {
 		
 		//Au nord
 		JPanel topPanel = new JPanel();
+		
+		topPanel.setBackground(Color.WHITE);
+		
 		searchInput = new JTextField();
 		searchInput.setPreferredSize(inputDimension);
 		topPanel.add(searchInput);
@@ -129,9 +131,6 @@ public class Window extends JFrame implements ActionListener {
 		
 		
 		// Au centre
-		centerPanel = new JPanel();
-//		centerPanel.setPreferredSize();
-		centerPanel.setBackground(Color.BLACK);
 		//Les données du tableau
 		data = Personnel.getAll();
 		//Les titres des colonnes 
@@ -144,24 +143,34 @@ public class Window extends JFrame implements ActionListener {
 		title.add("Fonction");
 		title.add("Salaire");
 		title.add("Action");
+		title.add("Action2");
 		// title.add("Reste");
 		
 		//Nous devons utiliser un modèle d'affichage spécifique pour pallier les bugs d'affichage !
 		personnelListTableModel = new ZModel(data, title);
 		tableau = new JTable(personnelListTableModel);
-		// tableau.removeColumn(tableau.getColumnModel().getColumn(0));
-		this.tableau.setDefaultRenderer(JButton.class, new TableComponent());
-		this.tableau.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
+		tableau.setRowHeight(25);
+		tableau.removeColumn(tableau.getColumnModel().getColumn(0));
 		
-		centerPanel.add(new JScrollPane(tableau));
+		TableComponent tableComponent = new TableComponent();
+		
+		this.tableau.setDefaultRenderer(JButton.class, tableComponent);
+		TableColumn actionCol = this.tableau.getColumn("Action");
+		actionCol.setCellEditor(new ButtonEditor(new JCheckBox()));
+		actionCol.setPreferredWidth(175);
+		
+		TableColumn action2Col = this.tableau.getColumn("Action2");
+		action2Col.setCellEditor(new ButtonEditor(new JCheckBox()));
+		action2Col.setPreferredWidth(150);
 
-		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
+		this.getContentPane().add(new JScrollPane(tableau), BorderLayout.CENTER);
 		
+		//Au nord
+		JPanel rightPanel = new JPanel();
 		
-		// À l'est
-		this.getContentPane().add(new JButton("EAST"),
-		BorderLayout.EAST);
-		this.setVisible(true);
+		rightPanel.setPreferredSize(leftDimension);
+		
+		this.getContentPane().add(rightPanel, BorderLayout.EAST);
 
 	}
 	
@@ -187,6 +196,7 @@ public class Window extends JFrame implements ActionListener {
 				res.add(inputFonction.getText());
 				res.add(inputSalaire.getText());
 				res.add(new JButton("Supprimer"));
+				res.add(new JButton("Détails"));
 				
 				personnelListTableModel.addRow(res);
 					
@@ -216,9 +226,8 @@ public class Window extends JFrame implements ActionListener {
 				personnelListTableModel.addRow(data.elementAt(i));
 			}
 		
-			
 		}
-		
-		
+			
 	}
+	
 }

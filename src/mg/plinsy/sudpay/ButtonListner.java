@@ -20,12 +20,6 @@ class ButtonListener implements ActionListener{
 	public void setTable(JTable table){this.table = table;}
 	
 	public void actionPerformed(ActionEvent event) {
-		System.out.println(
-				"coucou du bouton : " +
-				((JButton)event.getSource()).getText()
-		);
-		
-		table.setValueAt("New Value " + (++nbre), this.row,
-		(this.column -1));
+		System.out.println(table.getSelectedRow());
 	}
 }

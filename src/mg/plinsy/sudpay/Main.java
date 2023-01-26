@@ -8,7 +8,8 @@ public class Main {
 		// TODO Auto-generated method stub
 		Window win = new Window();
 		win.setTitle("Sudpay");
-		win.setSize(new Dimension(800, 500));
+		win.setSize(new Dimension(1000, 550));
+		win.setMinimumSize(new Dimension(1000, 550));
 		win.setVisible(true);
 	}
 

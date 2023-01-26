@@ -76,6 +76,7 @@ public class Personnel {
 				o.add(dbRes.getString("fonction"));
 				o.add(dbRes.getString("salaire"));
 				o.add(new JButton("Supprimer"));
+				o.add(new JButton("Détails"));
 				res.add(o);
 			}
 			
@@ -111,6 +112,7 @@ public class Personnel {
 				o.add(dbRes.getString("fonction"));
 				o.add(dbRes.getString("salaire"));
 				o.add(new JButton("Supprimer"));
+				o.add(new JButton("Détails"));
 				res.add(o);
 			}
 			
