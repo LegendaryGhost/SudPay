@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 public class Window extends JFrame implements ActionListener {
 	
@@ -33,8 +35,8 @@ public class Window extends JFrame implements ActionListener {
 	private JButton submitBtn;
 	private JButton searchBtn;
 	private JTable tableau;
-	private Vector<Vector<String>> data;
-	private DefaultTableModel personnelListTableModel;
+	private Vector<Vector<Object>> data;
+	private ZModel personnelListTableModel;
 	private Vector<String> title = new Vector<String>();
 		
 	public Window() {
@@ -134,15 +136,23 @@ public class Window extends JFrame implements ActionListener {
 		data = Personnel.getAll();
 		//Les titres des colonnes 
 		// {"Nom", "Prénom", "Téléphone", "Adresse", "Fonction", "Salaire", "Reste"};
+		title.add("Id");
 		title.add("Nom");
 		title.add("Prenom");
 		title.add("Téléphone");
 		title.add("Adresse");
 		title.add("Fonction");
 		title.add("Salaire");
-//		title.add("Reste");
-		personnelListTableModel = new DefaultTableModel(data, title);
+		title.add("Action");
+		// title.add("Reste");
+		
+		//Nous devons utiliser un modèle d'affichage spécifique pour pallier les bugs d'affichage !
+		personnelListTableModel = new ZModel(data, title);
 		tableau = new JTable(personnelListTableModel);
+		// tableau.removeColumn(tableau.getColumnModel().getColumn(0));
+		this.tableau.setDefaultRenderer(JButton.class, new TableComponent());
+		this.tableau.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
+		
 		centerPanel.add(new JScrollPane(tableau));
 
 		this.getContentPane().add(centerPanel, BorderLayout.CENTER);
@@ -158,7 +168,7 @@ public class Window extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 
 		if(arg0.getSource() == this.submitBtn) {
-			Vector<String> res = new Vector<String>();
+			Vector<Object> res = new Vector<Object>();
 			try {
 				Personnel p = new Personnel(
 					null,
@@ -176,6 +186,7 @@ public class Window extends JFrame implements ActionListener {
 				res.add(inputAdresse.getText());
 				res.add(inputFonction.getText());
 				res.add(inputSalaire.getText());
+				res.add(new JButton("Supprimer"));
 				
 				personnelListTableModel.addRow(res);
 					
@@ -193,7 +204,7 @@ public class Window extends JFrame implements ActionListener {
 				
 			}
 		} else if(arg0.getSource() == this.searchBtn) {
-			Vector<Vector<String>> res = Personnel.search(searchInput.getText());
+			Vector<Vector<Object>> res = Personnel.search(searchInput.getText());
 			
 			for(int i = data.size() - 1; i >= 0 ;i--) {
 				personnelListTableModel.removeRow(0);

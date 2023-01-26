@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.swing.JButton;
+
 public class Personnel {
 	
 	public int id;
@@ -55,8 +57,8 @@ public class Personnel {
 		return true;
 	}
 	
-	public static Vector<Vector<String>> getAll() {
-		Vector<Vector<String>> res = new Vector<Vector<String>>();
+	public static Vector<Vector<Object>> getAll() {
+		Vector<Vector<Object>> res = new Vector<Vector<Object>>();
 		String sql = "SELECT * FROM personnel LIMIT 10;";
 		
 		try {
@@ -65,13 +67,15 @@ public class Personnel {
 			ResultSet dbRes = db.getStatement().executeQuery(sql);
 			
 			while(dbRes.next()) {
-				Vector<String> o = new Vector<String>();
+				Vector<Object> o = new Vector<Object>();
+				o.add(dbRes.getString("id"));
 				o.add(dbRes.getString("nom"));
 				o.add(dbRes.getString("prenom"));
 				o.add(dbRes.getString("tel"));
 				o.add(dbRes.getString("adresse"));
 				o.add(dbRes.getString("fonction"));
 				o.add(dbRes.getString("salaire"));
+				o.add(new JButton("Supprimer"));
 				res.add(o);
 			}
 			
@@ -82,8 +86,8 @@ public class Personnel {
 		return res;
 	}
 	
-	public static Vector<Vector<String>> search(String q) {
-		Vector<Vector<String>> res = new Vector<Vector<String>>();
+	public static Vector<Vector<Object>> search(String q) {
+		Vector<Vector<Object>> res = new Vector<Vector<Object>>();
 		
 		
 		String sql = "SELECT * FROM personnel "
@@ -98,13 +102,15 @@ public class Personnel {
 			ResultSet dbRes = db.getStatement().executeQuery(sql);
 			
 			while(dbRes.next()) {
-				Vector<String> o = new Vector<String>();
+				Vector<Object> o = new Vector<Object>();
+				o.add(dbRes.getString("id"));
 				o.add(dbRes.getString("nom"));
 				o.add(dbRes.getString("prenom"));
 				o.add(dbRes.getString("tel"));
 				o.add(dbRes.getString("adresse"));
 				o.add(dbRes.getString("fonction"));
 				o.add(dbRes.getString("salaire"));
+				o.add(new JButton("Supprimer"));
 				res.add(o);
 			}
 			
