@@ -5,12 +5,12 @@ import java.awt.Dimension;
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Window win = new Window();
-		win.setTitle("Sudpay");
-		win.setSize(new Dimension(1000, 550));
-		win.setMinimumSize(new Dimension(1000, 550));
-		win.setVisible(true);
+		LoginWindow logWin = new LoginWindow();
+		logWin.setTitle("Sudpay");
+		Dimension loginDimension = new Dimension(250, 375);
+		logWin.setSize(loginDimension);
+		logWin.setMinimumSize(loginDimension);
+		logWin.setVisible(true);
 	}
 
 }
