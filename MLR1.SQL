@@ -94,6 +94,32 @@ ALTER TABLE SALAIRE ADD
                REFERENCES PERSONNEL (ID);
 
 
+CREATE SEQUENCE IF NOT EXISTS seq_personnel_id;
+ALTER TABLE personnel ALTER COLUMN id SET DEFAULT nextval('seq_personnel_id');
+CREATE SEQUENCE IF NOT EXISTS seq_avance_id;
+ALTER TABLE avance ALTER COLUMN id SET DEFAULT nextval('seq_avance_id');
+CREATE SEQUENCE IF NOT EXISTS seq_salaire_id;
+ALTER TABLE salaire ALTER COLUMN id SET DEFAULT nextval('seq_salaire_id');
+
+alter table personnel drop column salaire;
+alter table personnel add column salaire float not null default 0;
+alter table salaire drop column montant;
+alter table salaire add column montant float not null default 0;
+
+CREATE TABLE IF NOT EXISTS users (
+     id INTEGER NOT NULL, 
+     username VARCHAR(255) NOT NULL UNIQUE, 
+     email VARCHAR(255) NOT NULL, 
+     password VARCHAR(255) NOT NULL, 
+     id_admin BOOLEAN NOT NULL DEFAULT false,
+     CONSTRAINT pk_user PRIMARY KEY(id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS seq_user_id;
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('seq_user_id');
+ALTER TABLE users ADD CONSTRAINT uniq_email UNIQUE (email);
+ALTER TABLE personnel ADD COLUMN user_id INTEGER;
+ALTER TABLE personnel ADD CONSTRAINT fk_personnel_user FOREIGN KEY (user_id) REFERENCES users(id);
 -- -----------------------------------------------------------------------------
 --                FIN DE GENERATION
 -- -----------------------------------------------------------------------------

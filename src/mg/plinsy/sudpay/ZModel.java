@@ -18,27 +18,32 @@ public class ZModel extends DefaultTableModel{
 	
 	//Retourne le titre de la colonne à l'indice spécifié
 	public String getColumnName(int col) {
+//		return super.getColumnName(col);
 		return this.title.get(col);
 	}
 	
 	//Retourne le nombre de colonnes
 	public int getColumnCount() {
+//		return super.getColumnCount();
 		return this.title.size();
 	}
 	
 	//Retourne le nombre de lignes
 	public int getRowCount() {
+//		return super.getRowCount();
 		return this.data == null ? 0 : this.data.size();
 	}
 	
 	//Retourne la valeur à l'emplacement spécifié
 	public Object getValueAt(int row, int col) {
+//		return super.getValueAt(row, col);
 		return this.data.get(row).get(col);
 	}
 	
 	//Définit la valeur à l'emplacement spécifié
 	public void setValueAt(Object value, int row, int col) {
-		//On interdit la modification sur certaines colonnes !
+//		super.setValueAt(value, row, col);
+		// On interdit la modification sur certaines colonnes !
 		if(!this.getColumnName(col).equals("Age"))
 			this.data.get(row).set(col, value);
 	}
@@ -49,6 +54,7 @@ public class ZModel extends DefaultTableModel{
 		//On se moque de la ligne puisque les types de données sont les mêmes quelle que soit la ligne
 		//On choisit donc la première ligne
 		return this.data.get(0).get(col).getClass();
+//		return super.getColumnClass(col);
 	}
 	
 	public boolean isCellEditable(int row, int col){

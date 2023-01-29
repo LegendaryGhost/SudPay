@@ -20,12 +20,16 @@ class ButtonListener implements ActionListener{
 	public void setTable(JTable table){this.table = table;}
 	
 	public void actionPerformed(ActionEvent event) {
-		System.out.println(
-				"coucou du bouton : " +
-				((JButton)event.getSource()).getText()
-		);
+		JButton clickedBtn = (JButton) event.getSource();
 		
-		table.setValueAt("New Value " + (++nbre), this.row,
-		(this.column -1));
+		if(clickedBtn == Window.saveAvanceBtn) {
+			
+			Window.current.saveNewAvance();
+			
+		} else {
+			
+			Window.current.showNewAvanceDialog(table);
+			
+		}
 	}
 }

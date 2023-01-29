@@ -9,12 +9,12 @@ public class DBConnection {
 		
 		try {
 			Class.forName("org.postgresql.Driver");
-			System.out.println("Driver O.K.");
-			String url = "jdbc:postgresql://localhost:5432/sudpaydb";
+			String url = "jdbc:postgresql://localhost:5434/sudpaydb";
 			String user = "postgres";
-			String passwd = "123456789";
+			String passwd = "xnil";
 			this.conn = DriverManager.getConnection(url, user, passwd);
 		} catch (Exception e) {
+			Window.print(e.toString());
 			e.printStackTrace();
 		}
 		
@@ -22,6 +22,9 @@ public class DBConnection {
 	
 	public Statement getStatement() {
 		try {
+			if(this.conn == null) {
+				throw new Exception("Conn is null");
+			}
 			return this.conn.createStatement();
 		} catch(Exception e) {
 			e.printStackTrace();

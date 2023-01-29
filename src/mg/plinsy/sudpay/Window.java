@@ -15,14 +15,28 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
 public class Window extends JFrame implements ActionListener {
 	
-	private Dimension leftDimension = new Dimension(250, 1000);
-	private Dimension labelDimension = new Dimension(200, 25);
-	private Dimension inputDimension = new Dimension(200, 25);
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static void print(String str) {
+		ZDialog dialog = new ZDialog(null, "Notice", true);
+		ZLabel h1 = new ZLabel(str);
+		dialog.add(h1);
+		dialog.setPreferredSize(new Dimension(800, 400));
+		dialog.setVisible(true);
+	}
+	
+	public static Window current;
+	
+	public static Dimension leftDimension = new Dimension(250, 1000);
+	public static Dimension labelDimension = new Dimension(200, 25);
+	public static Dimension inputDimension = new Dimension(200, 25);
 	
 	private JPanel centerPanel;
 	private JTextField inputNom;
@@ -38,15 +52,19 @@ public class Window extends JFrame implements ActionListener {
 	private Vector<Vector<Object>> data;
 	private ZModel personnelListTableModel;
 	private Vector<String> title = new Vector<String>();
+	
+	public static int persoId = 0;
+	public static JButton saveAvanceBtn = new JButton("Enregistrer");
+	public static JTextField montantInput = new JTextField("");
 		
 	public Window() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		//On définit le layout à utiliser sur le content pane
+		this.setLocationRelativeTo(rootPane);
+		// On définit le layout à utiliser sur le content pane
 		this.setLayout(new BorderLayout());
-		//On ajoute le bouton au content pane de la JFrame
+		// On ajoute le bouton au content pane de la JFrame
 		
-		//Au nord
+		// Au nord
 		JPanel topPanel = new JPanel();
 		searchInput = new JTextField();
 		searchInput.setPreferredSize(inputDimension);
@@ -56,9 +74,9 @@ public class Window extends JFrame implements ActionListener {
 		topPanel.add(searchBtn);
 		this.getContentPane().add(topPanel, BorderLayout.NORTH);
 		
+
 		
-		
-		//Au sud
+		// Au sud
 		this.getContentPane().add(new JButton("SOUTH"),
 		BorderLayout.SOUTH);
 		
@@ -133,7 +151,7 @@ public class Window extends JFrame implements ActionListener {
 //		centerPanel.setPreferredSize();
 		centerPanel.setBackground(Color.BLACK);
 		//Les données du tableau
-		data = Personnel.getAll();
+		data = Personnel.getAll(this);
 		//Les titres des colonnes 
 		// {"Nom", "Prénom", "Téléphone", "Adresse", "Fonction", "Salaire", "Reste"};
 		title.add("Id");
@@ -143,6 +161,7 @@ public class Window extends JFrame implements ActionListener {
 		title.add("Adresse");
 		title.add("Fonction");
 		title.add("Salaire");
+		title.add("Reste");
 		title.add("Action");
 		// title.add("Reste");
 		
@@ -159,9 +178,10 @@ public class Window extends JFrame implements ActionListener {
 		
 		
 		// À l'est
-		this.getContentPane().add(new JButton("EAST"),
-		BorderLayout.EAST);
+		this.getContentPane().add(new JButton("EAST"), BorderLayout.EAST);
 		this.setVisible(true);
+		
+		current = this;
 
 	}
 	
@@ -186,9 +206,7 @@ public class Window extends JFrame implements ActionListener {
 				res.add(inputAdresse.getText());
 				res.add(inputFonction.getText());
 				res.add(inputSalaire.getText());
-				res.add(new JButton("Supprimer"));
-				
-				personnelListTableModel.addRow(res);
+				res.add(new JButton("Supprimer"));	
 					
 				if(p.insert()) {
 					inputNom.setText("");
@@ -197,28 +215,104 @@ public class Window extends JFrame implements ActionListener {
 					inputAdresse.setText("");
 					inputFonction.setText("");
 					inputSalaire.setText("");
+					personnelListTableModel.addRow(res);
+					data.add(res);
 				}
 			} catch(Exception e) {
-				
-				
-				
+				e.printStackTrace();
 			}
 		} else if(arg0.getSource() == this.searchBtn) {
-			Vector<Vector<Object>> res = Personnel.search(searchInput.getText());
+			Vector<Vector<Object>> res = Personnel.search(searchInput.getText(), this);
 			
-			for(int i = data.size() - 1; i >= 0 ;i--) {
-				personnelListTableModel.removeRow(0);
+			for(int i = 0; i < data.size(); i++) {
+				int rowId = 1;
+				System.out.println("Removing row " + rowId);
+				personnelListTableModel.removeRow(rowId);
 			}
 			
 			data = res;
 			
-			for(int i = 0; i< data.size(); i++) {
+			for(int i = 1; i <= data.size(); i++) {
 				personnelListTableModel.addRow(data.elementAt(i));
 			}
 		
 			
+		} else if(arg0.getSource() == saveAvanceBtn) {
+			this.saveNewAvance();
+		} else {
+			System.out.println(arg0.getSource());
 		}
 		
 		
+	}
+	
+	public void showNewAvanceDialog(JTable table) {
+		
+		try {
+			Window.persoId = Integer.parseInt(table.getModel().getValueAt(table.getSelectedRow(), 0).toString());
+			Personnel p = Personnel.get(persoId);
+			ZDialog avanceDialog = new ZDialog(null, "Prendre une avance", true);
+			
+			JPanel pan1 = new JPanel();
+			ZLabel pan1Title = new ZLabel("Prendre une avance");
+			pan1.add(pan1Title);
+			avanceDialog.add(pan1);
+			
+			JPanel pan2 = new JPanel();
+			ZLabel pan2NomPersonnel = new ZLabel("Pour " + p);
+			pan2.add(pan2NomPersonnel);
+			ZLabel pan2MontantLabel = new ZLabel("Montant de l'avance: ");
+			pan2.add(pan2MontantLabel);
+			montantInput.setPreferredSize(Window.inputDimension);
+			pan2.add(montantInput);
+			saveAvanceBtn.setPreferredSize(Window.inputDimension);
+			pan2.add(saveAvanceBtn);
+			saveAvanceBtn.addActionListener(this);
+			avanceDialog.add(pan2);
+			
+			avanceDialog.setVisible(true);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void saveNewAvance() {
+		try {
+			if(montantInput.getText().equals("")) {
+				throw new Error("Veuillez entrer le montant de l'avance");
+			} else {
+				saveAvanceBtn.setOpaque(true);
+				/*
+				 * Choisi d'abord de quel salaire il s'agit
+				 */
+				Personnel p = Personnel.get(persoId);
+				int montant = Integer.parseInt(montantInput.getText());
+				
+				Salaire s = p.getSalaire(montant);
+				
+				Avance a = new Avance(null, montant + "", s.id + "", persoId + "");
+				if(a.insert()) {
+					ZDialog.current.dispose();
+					int rowId = tableau.getSelectedRow();
+					personnelListTableModel.removeRow(rowId);
+					Vector<Object> o = new Vector<Object>();
+					o.add(p.id);
+					o.add(p.nom);
+					o.add(p.prenom);
+					o.add(p.tel);
+					o.add(p.adresse);
+					o.add(p.fonction);
+					o.add(p.salaire);
+					o.add(p.getReste());
+					o.add(p.newAvanceBtn);
+					personnelListTableModel.insertRow(rowId, o);
+				}
+			}
+			
+		} catch(Exception e) {
+			Window.print(e.toString());
+			e.printStackTrace();
+		}
 	}
 }
