@@ -42,14 +42,13 @@ public class ZModel extends DefaultTableModel{
 	
 	//Définit la valeur à l'emplacement spécifié
 	public void setValueAt(Object value, int row, int col) {
-//		super.setValueAt(value, row, col);
-		// On interdit la modification sur certaines colonnes !
-		if(!this.getColumnName(col).equals("Age"))
+		//On interdit la modification sur certaines colonnes !
+		if(!this.getColumnName(col).equals("Action") || !this.getColumnName(col).equals("Action2"))
 			this.data.get(row).set(col, value);
 	}
 	
 	//Retourne la classe de la donnée de la colonne
-	public Class getColumnClass(int col){
+	public Class<?> getColumnClass(int col) {
 		//On retourne le type de la cellule à la colonne demandée
 		//On se moque de la ligne puisque les types de données sont les mêmes quelle que soit la ligne
 		//On choisit donc la première ligne
@@ -57,7 +56,19 @@ public class ZModel extends DefaultTableModel{
 //		return super.getColumnClass(col);
 	}
 	
-	public boolean isCellEditable(int row, int col){
+	public void removeRow(int index) {
+		data.remove(index);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addRow(Vector<?> newRow) {
+		int row = getColumnCount();
+		
+		data.add((Vector<Object>) newRow);
+        fireTableRowsInserted(row, row);
+	}
+	
+	public boolean isCellEditable(int row, int col) {
 		return true;
 	}
 	

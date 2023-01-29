@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public class Window extends JFrame implements ActionListener {
 	
@@ -66,6 +68,9 @@ public class Window extends JFrame implements ActionListener {
 		
 		// Au nord
 		JPanel topPanel = new JPanel();
+		
+		topPanel.setBackground(Color.WHITE);
+		
 		searchInput = new JTextField();
 		searchInput.setPreferredSize(inputDimension);
 		topPanel.add(searchInput);
@@ -147,9 +152,6 @@ public class Window extends JFrame implements ActionListener {
 		
 		
 		// Au centre
-		centerPanel = new JPanel();
-//		centerPanel.setPreferredSize();
-		centerPanel.setBackground(Color.BLACK);
 		//Les données du tableau
 		data = Personnel.getAll(this);
 		//Les titres des colonnes 
@@ -163,6 +165,7 @@ public class Window extends JFrame implements ActionListener {
 		title.add("Salaire");
 		title.add("Reste");
 		title.add("Action");
+		title.add("Action2");
 		// title.add("Reste");
 		
 		//Nous devons utiliser un modèle d'affichage spécifique pour pallier les bugs d'affichage !
@@ -178,7 +181,10 @@ public class Window extends JFrame implements ActionListener {
 		
 		
 		// À l'est
-		this.getContentPane().add(new JButton("EAST"), BorderLayout.EAST);
+		JPanel rightPanel = new JPanel();
+		rightPanel.setPreferredSize(leftDimension);
+		this.getContentPane().add(rightPanel, BorderLayout.EAST);
+
 		this.setVisible(true);
 		
 		current = this;
@@ -207,6 +213,7 @@ public class Window extends JFrame implements ActionListener {
 				res.add(inputFonction.getText());
 				res.add(inputSalaire.getText());
 				res.add(new JButton("Supprimer"));	
+				res.add(new JButton("Détails"));
 					
 				if(p.insert()) {
 					inputNom.setText("");

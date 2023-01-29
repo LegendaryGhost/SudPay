@@ -191,6 +191,8 @@ public class Personnel {
 				o.add(p.salaire);
 				o.add(p.getReste());
 				o.add(p.newAvanceBtn);
+				o.add(new JButton("Supprimer"));
+				o.add(new JButton("Détails"));
 				res.add(o);
 			}
 			

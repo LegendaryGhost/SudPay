@@ -72,6 +72,24 @@ CREATE  INDEX IF NOT EXISTS I_FK_SALAIRE_PERSONNEL
      ON SALAIRE (ID_POSSEDER ASC)
     ;
 
+-- -----------------------------------------------------------------------------
+--       TABLE : USERS
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS users (
+     id INTEGER NOT NULL, 
+     username VARCHAR(255) NOT NULL UNIQUE, 
+     email VARCHAR(255) NOT NULL, 
+     password VARCHAR(255) NOT NULL, 
+     is_admin BOOLEAN NOT NULL DEFAULT false;
+     CONSTRAINT pk_user PRIMARY KEY(id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS seq_user_id;
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('seq_user_id');
+ALTER TABLE users ADD CONSTRAINT uniq_email UNIQUE (email);
+ALTER TABLE personnel ADD COLUMN user_id INTEGER;
+ALTER TABLE personnel ADD CONSTRAINT fk_personnel_user FOREIGN KEY (user_id) REFERENCES users(id);
 
 -- -----------------------------------------------------------------------------
 --       CREATION DES REFERENCES DE TABLE
